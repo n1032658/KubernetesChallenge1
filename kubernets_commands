@@ -98,3 +98,31 @@ spec:
 //Service 'jekyll' uses NodePort: '30097', namespace: 'development'
 
 k expose pod jekyll --port=8080 --target-port=4000 --name=jekyll --type=NodePort -n development
+
+---------------------------------------------------------
+Shared volumes:
+
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: volume-share-datacenter
+  labels:
+    name: myapp
+spec:
+  volumes:
+    - name: volume-share
+      emptyDir: {}
+  containers:
+    - name: volume-container-datacenter-1
+      image: centos:latest
+      command: ["/bin/bash", "-c", "sleep 10000"]
+      volumeMounts:
+        - name: volume-share
+          mountPath: /tmp/news
+    - name: volume-container-datacenter-2
+      image: centos:latest
+      command: ["/bin/bash", "-c", "sleep 10000"]
+      volumeMounts:
+        - name: volume-share
+          mountPath: /tmp/cluster
